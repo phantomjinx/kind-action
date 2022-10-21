@@ -143,6 +143,7 @@ install_kind() {
     echo 'Installing kind...'
     curl -sSLo kind "https://github.com/kubernetes-sigs/kind/releases/download/$version/kind-${KIND_OS}-${KIND_ARCH}"
     chmod +x kind
+    ${SUDO} mkdir -p /usr/local/bin
     ${SUDO} mv kind /usr/local/bin/kind
 }
 
@@ -150,6 +151,7 @@ install_kubectl() {
     echo 'Installing kubectl...'
     curl -sSLO "https://storage.googleapis.com/kubernetes-release/release/$kubectl_version/bin/${KIND_OS}/${KIND_ARCH}/${KIND_KUBECTL_BINARY}"
     chmod +x ${KIND_KUBECTL_BINARY}
+    ${SUDO} mkdir -p /usr/local/bin
     ${SUDO} mv ${KIND_KUBECTL_BINARY} /usr/local/bin/kubectl
 }
 
