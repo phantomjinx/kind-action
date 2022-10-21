@@ -43,7 +43,7 @@ main() {
     local document=false
 
     parse_command_line "$@"
-    
+
     if [[ "$document" = "false" ]]
     then
         create_registry
@@ -124,7 +124,7 @@ parse_command_line() {
 create_registry() {
     echo "Creating registry \"$registry_name\" on port $registry_port from image \"$registry_image\"..."
     docker run -d --restart=always -p "${registry_port}:5000" --name "${registry_name}" $registry_image > /dev/null
-    
+
     # Adding registry to /etc/hosts
     echo "127.0.0.1 $registry_name" | ${SUDO} tee --append /etc/hosts
 
@@ -134,7 +134,11 @@ create_registry() {
 
 connect_registry() {
     echo 'Connecting registry to the "kind" network...'
-    docker network create kind
+    local options=""
+    if [ "${KIND_OS}" == "windows" ]; then
+      options="--driver nat"
+    fi
+    docker network create ${options} kind
     docker network connect "kind" "${registry_name}"
 }
 
