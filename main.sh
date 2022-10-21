@@ -21,6 +21,7 @@ SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_S
 main() {
     args_kind=()
     args_knative=()
+    args_registry=()
 
     if [[ -n "${INPUT_VERSION:-}" ]]; then
         args_kind+=(--version "${INPUT_VERSION}")
@@ -62,8 +63,20 @@ main() {
         args_knative+=(--knative-eventing "${INPUT_KNATIVE_EVENTING}")
     fi
 
+    if [[ -n "${INPUT_REGISTRY_IMAGE:-}" ]]; then
+        args_registry+=(--registry-image "${INPUT_REGISTRY_IMAGE}")
+    fi
+
+    if [[ -n "${INPUT_REGISTRY_NAME:-}" ]]; then
+        args_registry+=(--registry-name "${INPUT_REGISTRY_NAME}")
+    fi
+
+    if [[ -n "${INPUT_REGISTRY_PORT:-}" ]]; then
+        args_registry+=(--registry-port "${INPUT_REGISTRY_PORT}")
+    fi
+
     if [[ -z "${INPUT_REGISTRY:-}" ]] || [[ "${INPUT_REGISTRY,,}" = "true" ]]; then
-        "$SCRIPT_DIR/registry.sh" "${args[@]}"
+        "$SCRIPT_DIR/registry.sh" "${args_registry[@]}"
 
         if [[ -n "${INPUT_CONFIG:-}" ]]; then
             echo 'WARNING: when using the "config" option, you need to manually configure the registry in the provided configuration'

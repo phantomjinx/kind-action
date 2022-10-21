@@ -19,6 +19,12 @@ inputs:
     description: "The log level for KinD"
   registry:
     description: "Configures an insecure registry on kind-registry:5000 to be used with KinD (default: true)"
+  registry_image:
+    description: "Provides an alternative image for the insecure registry"
+  registry_name:
+    description: "Provides an alternative name for the insecure registry"
+  registry_port:
+    description: "Provides an alternative port for the insecure registry"
   kubectl_version:
     description: "The version of kubectl to use (default: v1.20.0)"
   knative_serving:
