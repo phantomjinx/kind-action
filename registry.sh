@@ -126,7 +126,7 @@ create_registry() {
     docker run -d --restart=always -p "${registry_port}:5000" --name "${registry_name}" $registry_image > /dev/null
     
     # Adding registry to /etc/hosts
-    echo "127.0.0.1 $registry_name" | sudo tee --append /etc/hosts
+    echo "127.0.0.1 $registry_name" | ${SUDO} tee --append /etc/hosts
 
     # Exporting the registry location for subsequent jobs
     echo "KIND_REGISTRY=${registry_name}:${registry_port}" >> $GITHUB_ENV
@@ -139,8 +139,8 @@ connect_registry() {
 }
 
 create_kind_config() {
-    sudo mkdir -p /etc/kind-registry
-    cat <<EOF | sudo dd status=none of=/etc/kind-registry/config.yaml
+    ${SUDO} mkdir -p /etc/kind-registry
+    cat <<EOF | ${SUDO} dd status=none of=/etc/kind-registry/config.yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 containerdConfigPatches:
@@ -148,7 +148,7 @@ containerdConfigPatches:
   [plugins."io.containerd.grpc.v1.cri".registry.mirrors."${registry_name}:${registry_port}"]
     endpoint = ["http://${registry_name}:${registry_port}"]
 EOF
-    sudo chmod a+r /etc/kind-registry/config.yaml
+    ${SUDO} chmod a+r /etc/kind-registry/config.yaml
 }
 
 document() {

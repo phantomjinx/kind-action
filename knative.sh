@@ -105,7 +105,7 @@ parse_command_line() {
 
 install_prerequisites() {
     echo "Installing yq for patching Knative resources..."
-    sudo pip install yq
+    ${SUDO} pip install yq
 }
 
 install_serving() {

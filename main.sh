@@ -18,6 +18,31 @@ set -o pipefail
 
 SCRIPT_DIR=$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}" || realpath "${BASH_SOURCE[0]}")")
 
+if [ "${RUNNER_OS}" == "Windows" ]; then
+  export KIND_OS="windows"
+  export KIND_KUBECTL_BINARY="kubectl.exe"
+  export SUDO=""
+elif [ "${RUNNER_OS}" == "Linux" ]; then
+  export KIND_OS="linux"
+  export KIND_KUBECTL_BINARY="kubectl"
+  export SUDO="sudo"
+else
+  echo "Error: Support for operating systems other than linux or windows is not currently supported"
+  exit 1
+fi
+
+if [ "${RUNNER_ARCH}" == "X64" ]; then
+  export KIND_ARCH="amd64"
+elif [ "${RUNNER_ARCH}" == "ARM64" ] && [ "${KIND_OS}" == "linux" ]; then
+  export KIND_ARCH="arm64"
+elif [ "${RUNNER_ARCH}" == "ARM64" ] && [ "${KIND_OS}" == "windows" ]; then
+  echo "Error: Kind is not available for ${KIND_OS} on ${RUNNER_ARCH}"
+  exit 1
+else
+  echo "Error: Support for the os/architecture ${KIND_OS}/${RUNNER_ARCH} is not currently supported"
+  exit 1
+fi
+
 main() {
     args_kind=()
     args_knative=()
